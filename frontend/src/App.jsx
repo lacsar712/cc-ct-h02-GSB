@@ -128,8 +128,10 @@ function App() {
       await loadRows();
     } catch (err) {
       setError(err.message);
-      // h02-trap-refresh: still reload rows after fail
-      try { await loadRows(); } catch (_) {}
+      // 只读账号提交失败后不再刷新总览（对应 should_refresh_after_fail）
+      if (user()?.can_write) {
+        try { await loadRows(); } catch (_) {}
+      }
     }
   }
 
@@ -197,7 +199,7 @@ function App() {
         </section>
 
         <Show when={route().name === "home"}>
-          <Show when={true /* h02-trap-form */}>
+          <Show when={user().can_write}>
             <section class="card">
               <h2>提交刀补</h2>
               <form onSubmit={handleSubmit} class="form inline">
