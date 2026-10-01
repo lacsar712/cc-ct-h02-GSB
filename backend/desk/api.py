@@ -94,9 +94,8 @@ def get_submission(request: HttpRequest, submission_id: int):
 @api.post("/submissions", response=SubmissionOut, auth=bearer_auth)
 def create_submission(request: HttpRequest, body: SubmissionIn):
     user: User = request.auth
-    from desk.auditor_pass import allow_write, deny_message
-    if not allow_write(user):
-        raise HttpError(403, deny_message())
+    if not user.can_write:
+        raise HttpError(403, "当前账号只读，不能提交刀补")
     tool_code = body.tool_code.strip()
     if not tool_code:
         raise HttpError(400, "刀具编号不能为空")

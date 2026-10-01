@@ -128,8 +128,6 @@ function App() {
       await loadRows();
     } catch (err) {
       setError(err.message);
-      // h02-trap-refresh: still reload rows after fail
-      try { await loadRows(); } catch (_) {}
     }
   }
 
@@ -197,7 +195,7 @@ function App() {
         </section>
 
         <Show when={route().name === "home"}>
-          <Show when={true /* h02-trap-form */}>
+          <Show when={user().can_write}>
             <section class="card">
               <h2>提交刀补</h2>
               <form onSubmit={handleSubmit} class="form inline">
